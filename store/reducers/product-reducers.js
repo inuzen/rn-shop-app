@@ -35,8 +35,8 @@ export default (state = initialState, { type, payload }) => {
                 payload.id,
                 state.userProducts[productIndex].ownerId,
                 payload.title,
-                payload.description,
                 payload.imageUrl,
+                payload.description,
                 state.userProducts[productIndex].price,
             );
             const updatedUserProducts = [...state.userProducts];
