@@ -1,6 +1,6 @@
 import PRODUCTS from '../../data/data';
 import Product from '../../models/product';
-import { CREATE_PRODUCT, DELETE_PRODUCT, UPDATE_PRODUCT } from '../actions/product-actions';
+import { CREATE_PRODUCT, DELETE_PRODUCT, SET_PRODUCTS, UPDATE_PRODUCT } from '../actions/product-actions';
 
 const initialState = {
     avaliableProducts: PRODUCTS,
@@ -9,6 +9,12 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
+        case SET_PRODUCTS:
+            return {
+                ...state,
+                avaliableProducts: payload,
+                userProducts: payload.filter((product) => product.ownerId === 'u1'),
+            };
         case DELETE_PRODUCT:
             return {
                 ...state,
@@ -17,7 +23,7 @@ export default (state = initialState, { type, payload }) => {
             };
         case CREATE_PRODUCT:
             const newProduct = new Product(
-                new Date().toString(),
+                payload.id,
                 'u1',
                 payload.title,
                 payload.description,
