@@ -30,8 +30,14 @@ export const signUp = (email, password) => {
         }
 
         const resData = await res.json();
-
-        dispatch({ type: SIGN_UP });
+        console.log(resData);
+        dispatch({
+            type: SIGN_UP,
+            payload: {
+                token: resData.idToken,
+                userId: resData.localId,
+            },
+        });
     };
 };
 export const signIn = (email, password) => {
@@ -64,7 +70,14 @@ export const signIn = (email, password) => {
         }
 
         const resData = await res.json();
-        console.log(resData);
-        dispatch({ type: SIGN_IN });
+        console.log('token: ' + resData.idToken);
+        console.log('localId ' + resData.localId);
+        dispatch({
+            type: SIGN_IN,
+            payload: {
+                token: resData.idToken,
+                userId: resData.localId,
+            },
+        });
     };
 };

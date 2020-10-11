@@ -1,5 +1,14 @@
 import React, { useEffect, useCallback, useReducer, useState } from 'react';
-import { StyleSheet, ScrollView, View, Alert, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import {
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    Button,
+    Alert,
+    KeyboardAvoidingView,
+    ActivityIndicator,
+} from 'react-native';
 import HeaderButton from '../../components/ui/HeaderButton';
 import { isAndroid } from '../../utility/helper-fns';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -92,7 +101,9 @@ const EditProductScreen = (props) => {
             }
             props.navigation.goBack();
         } catch (err) {
-            throw err.message;
+            setError(err.message);
+            // props.navigation.goBack();
+            // throw err.message;
         }
         setIsLoading(false);
     }, [dispatch, prodId, formState]);
@@ -113,14 +124,14 @@ const EditProductScreen = (props) => {
         [dispatchFormState],
     );
 
-    if (error) {
-        return (
-            <View style={styles.centered}>
-                <Text>An error occured!</Text>
-                <Button title="Try Again" onPress={loadProducts} color={Colors.primary} />
-            </View>
-        );
-    }
+    // if (error) {
+    //     return (
+    //         <View style={styles.centered}>
+    //             <Text>An error occured!</Text>
+    //             <Button title="Try Again" onPress={loadProducts} color={Colors.primary} />
+    //         </View>
+    //     );
+    // }
     if (isLoading) {
         return (
             <View style={styles.centered}>
@@ -129,7 +140,11 @@ const EditProductScreen = (props) => {
         );
     }
     return (
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+            behavior={isAndroid() ? 'height' : 'padding'}
+            keyboardVerticalOffset={100}
+            style={{ flex: 1 }}
+        >
             <ScrollView>
                 <View style={styles.form}>
                     <Input

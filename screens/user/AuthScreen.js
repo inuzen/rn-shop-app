@@ -58,10 +58,11 @@ const AuthScreen = (props) => {
         setIsLoading(true);
         try {
             await dispatch(action);
+            props.navigation.navigate('Shop');
         } catch (err) {
             setError(err.message);
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
     useEffect(() => {
         if (error) {
@@ -136,7 +137,6 @@ const AuthScreen = (props) => {
                             )}
                         </View>
                         <View style={styles.buttonContainer}>
-                            (
                             <Button
                                 title={`Switch to ${isSignUp ? 'Login' : 'Sign Up'}`}
                                 color={Colors.accent}
@@ -144,7 +144,6 @@ const AuthScreen = (props) => {
                                     setIsSignUp((prev) => !prev);
                                 }}
                             />
-                            )
                         </View>
                     </ScrollView>
                 </Card>

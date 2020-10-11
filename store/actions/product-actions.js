@@ -6,9 +6,11 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const userId = getState().auth.userId;
         try {
-            const response = await fetch('https://rn-shop-app-ef53b.firebaseio.com/products.json');
+            const response = await fetch(`https://rn-shop-app-ef53b.firebaseio.com/products.json?auth=${token}`);
             if (!response.ok) {
                 throw new Error('Something went wrong');
             }
@@ -19,7 +21,7 @@ export const fetchProducts = () => {
                 loadedProducts.push(
                     new Product(
                         key,
-                        'u1',
+                        resData[key].ownerId,
                         resData[key].title,
                         resData[key].imageUrl,
                         resData[key].description,
@@ -30,7 +32,10 @@ export const fetchProducts = () => {
 
             dispatch({
                 type: SET_PRODUCTS,
-                payload: loadedProducts,
+                payload: {
+                    loadedProducts,
+                    userProducts: loadedProducts.filter((product) => product.ownerId === userId),
+                },
             });
         } catch (err) {
             throw err;
@@ -39,12 +44,16 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = (productId) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         //any async code here
+        const token = getState().auth.token;
         //.json is because of a firebase
-        const response = await fetch(`https://rn-shop-app-ef53b.firebaseio.com/products/${productId}.json`, {
-            method: 'DELETE',
-        });
+        const response = await fetch(
+            `https://rn-shop-app-ef53b.firebaseio.com/products/${productId}.json?auth=${token}`,
+            {
+                method: 'DELETE',
+            },
+        );
         if (!response.ok) {
             throw new Error('Something went wrong');
         }
@@ -56,10 +65,13 @@ export const deleteProduct = (productId) => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         //any async code here
+        const userId = getState().auth.userId;
+        const token = getState().auth.token;
+
         //.json is because of a firebase
-        const response = await fetch('https://rn-shop-app-ef53b.firebaseio.com/products.json', {
+        const response = await fetch(`https://rn-shop-app-ef53b.firebaseio.com/products.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,6 +81,7 @@ export const createProduct = (title, description, imageUrl, price) => {
                 description,
                 imageUrl,
                 price,
+                ownerId: userId,
             }),
         });
         if (!response.ok) {
@@ -78,17 +91,17 @@ export const createProduct = (title, description, imageUrl, price) => {
 
         dispatch({
             type: CREATE_PRODUCT,
-            payload: { id: resData.name, title, description, imageUrl, price },
+            payload: { id: resData.name, title, description, imageUrl, price, ownerId: userId },
         });
     };
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         //any async code here
-
+        const token = getState().auth.token;
         //.json is because of a firebase
-        const response = await fetch(`https://rn-shop-app-ef53b.firebaseio.com/products/${id}.json`, {
+        const response = await fetch(`https://rn-shop-app-ef53b.firebaseio.com/products/${id}.json?auth=${token}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

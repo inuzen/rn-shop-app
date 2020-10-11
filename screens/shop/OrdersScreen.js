@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, FlatList, View, ActivityIndicator, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderButton from '../../components/ui/HeaderButton';
 import { isAndroid } from '../../utility/helper-fns';
@@ -28,7 +28,13 @@ const OrdersScreen = (props) => {
             </View>
         );
     }
-
+    if (!orders.length) {
+        return (
+            <View style={styles.centered}>
+                <Text>No orders found, maybe start placing some?</Text>
+            </View>
+        );
+    }
     return (
         <FlatList
             data={orders}

@@ -9,11 +9,13 @@ import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import ordersReducer from './store/reducers/orders-reducer';
+import authReducer from './store/reducers/auth-reducer';
 
 const rootReducer = combineReducers({
     products: productsReducer,
     cart: cartReducer,
     orders: ordersReducer,
+    auth: authReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
