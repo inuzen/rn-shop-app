@@ -1,6 +1,7 @@
 import React from 'react';
+import { SafeAreaView, Button, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-drawer';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { isAndroid } from '../utility/helper-fns';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
@@ -12,6 +13,9 @@ import { Ionicons } from '@expo/vector-icons';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
 import EditProductScreen from '../screens/user/EditProductScreen';
 import AuthScreen from '../screens/user/AuthScreen';
+import StartupScreen from '../screens/StartupScreen';
+import { useDispatch } from 'react-redux';
+import * as authActions from '../store/actions/auth-actions';
 
 const defaultNavOption = {
     headerStyle: {
@@ -80,6 +84,24 @@ const ShopNavigator = createDrawerNavigator(
         contentOptions: {
             activeTintColor: Colors.primary,
         },
+        contentComponent: (props) => {
+            const dispatch = useDispatch();
+            return (
+                <View style={{ flex: 1, paddingTop: 20 }}>
+                    <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                        <DrawerNavigatorItems {...props} />
+                        <Button
+                            title="Logout"
+                            color={Colors.primary}
+                            onPress={() => {
+                                dispatch(authActions.logOut());
+                                props.navigation.navigate('Auth');
+                            }}
+                        />
+                    </SafeAreaView>
+                </View>
+            );
+        },
     },
 );
 
@@ -93,6 +115,7 @@ const AuthNavigator = createStackNavigator(
 );
 
 const MainNavigator = createSwitchNavigator({
+    Startup: StartupScreen,
     Auth: AuthNavigator,
     Shop: ShopNavigator,
 });
